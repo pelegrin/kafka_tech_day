@@ -1,0 +1,45 @@
+version: '3.4'
+
+services:
+  zookeeper:
+    image: pelegrin/zookeeper:3.6.3
+    hostname: zookeeper
+    networks:
+      - test
+    ports:
+      - "2181:2181"    
+  kafka1:
+    image: pelegrin/kafka:2.13-3.1.0
+    hostname: kafka1
+    depends_on:
+      - zookeeper
+    networks:
+      - test
+    ports:
+      - "9092:9092"
+    environment:
+      ZOOKEEPER_HOST: "zookeeper"
+      ZOOKEEPER_PORT: 2181
+      KAFKA_ID: 0
+      KAFKA_HOST: "kafka1"
+      KAFKA_PORT: 9092
+      KAFKA_PARTITIONS: 2    
+  kafka2:
+    image: pelegrin/kafka:2.13-3.1.0
+    hostname: kafka2
+    depends_on:
+      - zookeeper
+    networks:
+      - test
+    ports:
+      - "9093:9093"
+    environment:
+      ZOOKEEPER_HOST: "zookeeper"
+      ZOOKEEPER_PORT: 2181
+      KAFKA_ID: 1
+      KAFKA_HOST: "kafka2"
+      KAFKA_PORT: 9093
+      KAFKA_PARTITIONS: 2
+
+networks:
+  test:
