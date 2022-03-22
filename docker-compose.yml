@@ -7,12 +7,18 @@ services:
     networks:
       - test
     ports:
-      - "2181:2181"    
+      - "2181:2181"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 2181 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5            
   kafka1:
     image: pelegrin/kafka:2.13-3.1.0
     hostname: kafka1
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     networks:
       - test
     ports:
@@ -28,7 +34,8 @@ services:
     image: pelegrin/kafka:2.13-3.1.0
     hostname: kafka2
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     networks:
       - test
     ports:
