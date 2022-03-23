@@ -16,12 +16,14 @@ topic = client.topics[topicName]
 producer = topic.get_producer()
 
 #Produce messages
+count = 0
 try:
     while True:
         message = input()
         if not message:
             break
-        producer.produce(bytes(message, 'utf-8'))
+        count = 0 if count == 1 else 1
+        producer.produce(bytes(message, 'utf-8'), partition_key = bytes(count))
         print ("Sent to topic: " + topicName + " message: " + message)
 
 except KeyboardInterrupt:
